@@ -1,34 +1,44 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    //This means that navigation is tab-based
+    <Tabs screenOptions={{
+        //top header
+        headerStyle: {
+            backgroundColor:  '#25292e', //color for top header
+        },
+        headerShadowVisible: false, //removes shadow
+        headerTintColor: '#fff',
+
+        //for tab bar
+        tabBarActiveTintColor: "#ffd33d", //color of active tab
+        tabBarStyle: {
+            backgroundColor: '#25292e',
+        }
+        
+    }}>
       <Tabs.Screen
-        name="index"
+        name="index" //refers to app/(tabs)/index.tsx
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
+            title: 'Home',
+            //this function is automatically called by expo router
+            tabBarIcon: ({color, focused}) => (
+                <Ionicons name={focused ? 'home-sharp': 'home-outline'} color={color} size={24}/>
+            )
+        }} 
       />
+      
       <Tabs.Screen
-        name="explore"
+        name="about" //refers to app/(tabs)/about.tsx
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
+            title: 'About',
+            tabBarIcon: ({color, focused}) => (
+                <Ionicons name={focused ? 'information-circle': 'information-circle-outline'} color={color} size={24}/>
+            )
+        }} 
       />
     </Tabs>
   );
