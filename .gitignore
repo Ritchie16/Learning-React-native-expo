@@ -3,6 +3,8 @@
 # dependencies
 node_modules/
 
+.vscode/
+
 # Expo
 .expo/
 dist/
@@ -18,7 +20,7 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
-.vscode/
+
 
 # Metro
 .metro-health-check*
