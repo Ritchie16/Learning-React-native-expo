@@ -13,14 +13,15 @@ export default function TabLayout() {
         headerShadowVisible: false, //removes shadow
         headerTintColor: '#fff',
 
-        //for tab bar
-        tabBarActiveTintColor: "#ffd33d", //color of active tab
+        //for tab  ---#37e245ff
+        tabBarActiveTintColor: "#e23744", //color of active tab
         tabBarStyle: {
             backgroundColor: '#25292e',
         }
         
     }}>
       <Tabs.Screen
+      //Connect this tab to the file named index.tsx inside the SAME folder
         name="index" //refers to app/(tabs)/index.tsx
         options={{
             title: 'Home',
@@ -40,6 +41,7 @@ export default function TabLayout() {
             )
         }} 
       />
+      
     </Tabs>
   );
 }

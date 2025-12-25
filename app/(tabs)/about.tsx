@@ -5,6 +5,7 @@ export default function AboutScreen(){
     return(
         <View style={styles.container} >
             <Text style={styles.text} >About Screen</Text>
+            <Text  style={{color: 'red'}}>Hello This is on About Screen</Text>
         </View>
     )
 }
