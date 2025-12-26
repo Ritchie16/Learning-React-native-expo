@@ -1,7 +1,7 @@
 import Button from '@/components/Button';
 import ImageViewer from "@/components/ImageViewer";
 import * as ImagePicker from 'expo-image-picker';
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 
@@ -9,6 +9,9 @@ const PlaceholderImage = require('@/assets/images/background-image.png');
 
 
 export default function Index() {
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
+
+
   const pickImageAsync = async () => {
     // No permissions request is necessary for launching the image library
     //the function launchImageLibraryAsync opens the image gallery
@@ -16,11 +19,13 @@ export default function Index() {
       mediaTypes: ['images'], //only images
       allowsEditing: true, //allow user to edit the image
       quality: 1, //highest quality and other quality values are 0 to 1
+  
     });
 
     //if the user did not cancel the process
     if(!result.canceled){
-      console.log(result);
+      //the result object contais an array called assets and first elemenet is an object with uri property
+      setSelectedImage(result.assets[0].uri);
     }
     else {
       alert('You did not select any image.');
@@ -31,7 +36,7 @@ export default function Index() {
       style={styles.container}
     >
       <View style={styles.imageContainer} >
-       <ImageViewer imageSource={PlaceholderImage} />
+       <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
       </View>
       
       <View style={styles.footerContainer} >
