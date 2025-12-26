@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: '#e94e4eff',
+        borderColor: '#805151ff',
         width: '100%',
         height: '100%',
         alignItems: 'center',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     },
     buttonLabel: {
         //text style for button label
-        color: '#18ca21ff',
+        color: '#fff',
         fontSize: 16,
     },
     });
