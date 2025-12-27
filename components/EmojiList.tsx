@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; { useState } from 'react';
+import React, { useState } from 'react';
 import { ImageSourcePropType, StyleSheet, FlatList, Platform, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 
