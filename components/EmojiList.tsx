@@ -25,14 +25,22 @@ export default function EmojiList({onSelect, onCloseModal}: Props){
           horizontal
           showsHorizontalScrollIndicator={Platform.OS === 'web'}
           data={emoji}
+          //rendering emojis in flex row and other stylings
           contentContainerStyle={styles.listContainer}
+
+          //rendering emojis as clickable items
           renderItem={({item, index}) => (
-            <Pressable
-                onPress={()=> {
-                    onSelect(item);
-                    onCloseModal();
-                }}
-            >
+                <Pressable
+                    onPress={()=> {
+                        //this tells the parent container which emoji was pressed
+                        //the prop passed setPickedEmoji becomes setPickedEmoji(item) replacing the prop name onSelect
+                        onSelect(item);
+                        //and sticker modal is closed
+                        onCloseModal();
+                    }}
+                >
+
+                {/**diaplays the emojis like in Map method */}    
                 <Image source={item} key={index} style={styles.image}/>
             </Pressable>
           )}

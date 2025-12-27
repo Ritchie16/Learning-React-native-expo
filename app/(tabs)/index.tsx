@@ -5,10 +5,11 @@ import { ImageSourcePropType, StyleSheet, View } from "react-native";
 
 import Button from '@/components/Button';
 import CircleButton from '@/components/CircleButton';
+import EmojiList from '@/components/EmojiList';
+import EmojiPicker from '@/components/EmojiPicker';
+import EmojiSticker from '@/components/EmojiSticker';
 import IconButton from '@/components/IconButton';
 import ImageViewer from "@/components/ImageViewer";
-import EmojiPicker from '@/components/EmojiPicker';
-import EmojiList from '@/components/EmojiList';
 
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
@@ -40,14 +41,17 @@ export default function Index() {
     }
   }
 
+  //closes icon buttons by setting to false
   const onReset = () => {
     setShowAppOptions(false);
   }
 
+  //open the stikcer modal by setting it ti visible
   const onAddSticker = () => {
     setIsModalVisible(true);
   }
 
+  //closes the sticker modal
   const onModalClose = () => {
     setIsModalVisible(false);
   }
@@ -62,6 +66,9 @@ export default function Index() {
       <View style={styles.imageContainer} >
         {/**pass the placeholder image and selected image to ImageViewer, if selectedImage is defined it will be the one to be displayed */}
        <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
+
+       {/**renders the selected sticker from sticker list in sticker modal */}
+       {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/>}
       </View>
 
       {
@@ -90,8 +97,12 @@ export default function Index() {
         )
       }
 
-      {/**Emoji picker modal */}
+      {/**Emoji picker modal 
+       * The onClose and onCloseModal prop executes a function that sets the modal visible to false hence it closes
+      */}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose} >
+
+        {/**the onSelect prop executes the setPcikedEmoji */}
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
     </View>
