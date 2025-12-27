@@ -20,11 +20,13 @@ export default function EmojiPicker({isVisible, children, onClose}: Props){
             <View style={styles.titleContainer}>
                 {/**Title text */}
               <Text style={styles.title}>Choose a Sticker</Text>
-                {/**Close button */}
+                {/**Close button onPrssing it calls executes a prop that set the modal visible false*/}
               <Pressable onPress={onClose}>
                 <MaterialIcons name='close' color='#fff' size={22}/>
               </Pressable>
             </View>
+            
+            {/**this children is a prop of emoji list from EmojiLsit component file */}
             {children}
           </View>
         </Modal>
