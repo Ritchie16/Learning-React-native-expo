@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { ImageSourcePropType, StyleSheet, FlatList, Platform, Pressable } from 'react-native';
 import { Image } from 'expo-image';
+import React, { useState } from 'react';
+import { FlatList, ImageSourcePropType, Platform, Pressable, StyleSheet } from 'react-native';
 
 
 type Props = {
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     image: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         marginRight: 20,
     }
 });
