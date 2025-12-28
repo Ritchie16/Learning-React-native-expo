@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageSourcePropType, View } from 'react-native';
+import { ImageSourcePropType } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -12,6 +12,10 @@ type Props = {
 export default function EmojiSticker({imageSize, stickerSource}: Props){
     //a mutable value
     const scaleImage = useSharedValue(imageSize);
+
+    //for pan gesture to track movement
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
 
     //Gesture.Tap() is a config object no detection yet
     const doubleTab = Gesture.Tap()
@@ -39,20 +43,48 @@ export default function EmojiSticker({imageSize, stickerSource}: Props){
     });
 
 
+    //Gesture.Pan() is a config object to detect track movement
+    const drag = Gesture.Pan()
+    .onChange(event => {
+        translateX.value += event.changeX;
+        translateY.value += event.changeY;
+    });
+
+    const containerStyle = useAnimatedStyle(() => {
+        return{
+            transform: [
+                {
+                    translateX: translateX.value,
+                },
+                {
+                    translateY: translateY.value,
+                },
+            ],
+        };
+    });
+
+
     return(
-        <View style={{top: -350}}>
-           <GestureDetector  gesture={doubleTab}>
-              {/**uses same size for width and height
-               * After useAnimatedStyles smoothly recalculated values, the Amimated.Image smoothly updates 
-              */}
-              <Animated.Image
-                source={stickerSource}
-                resizeMode="contain" //makes the image uniformly fits inside container without distortion
-                
-                //the styles for imageSize are initial and static. when animations run the imageStyle overrides
-                style={[imageStyle, {width: imageSize, height: imageSize}]}
-              />
-           </GestureDetector>
-        </View>
+        <GestureDetector gesture={drag}>
+
+            {/**Animated.View for movement track
+             * The top: -350 is initial and get's overriden when Pan movement is executed*/}
+            <Animated.View style={[containerStyle, {top: -350}]}>
+
+                <GestureDetector  gesture={doubleTab}>
+                    {/**uses same size for width and height
+                     * After useAnimatedStyles smoothly recalculated values, the Amimated.Image smoothly updates 
+                     */}
+                    <Animated.Image
+                        source={stickerSource}
+                        resizeMode="contain" //makes the image uniformly fits inside container without distortion
+
+                        //the styles for imageSize are initial and static. when animations run the imageStyle overrides
+                        style={[imageStyle, {width: imageSize, height: imageSize}]}
+                    />
+                </GestureDetector>
+            </Animated.View>
+        </GestureDetector>
+        
     )
 }
