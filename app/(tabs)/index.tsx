@@ -1,9 +1,11 @@
+import domtoimage from 'dom-to-image';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import React, { useEffect, useRef, useState } from "react";
-import { ImageSourcePropType, StyleSheet, View } from "react-native";
+import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { captureRef } from 'react-native-view-shot';
+
 
 
 
@@ -75,32 +77,51 @@ export default function Index() {
 
   //logic to take a screenshot and save to media gallery
   const onSaveImageAsync = async () => {
-    try {
-      //checks permission before taking screenshot
-      if (!permissionResponse?.granted) {
-        await requestPermission();
-        alert("Access allowed. Tap Save again to save your image.");
-        return;
-      }
+    //checks the platform either web or native and adjust logic
+    if (Platform.OS !== 'web') {
+      try {
+        //checks permission before taking screenshot
+        if (!permissionResponse?.granted) {
+          await requestPermission();
+          alert("Access allowed. Tap Save again to save your image.");
+          return;
+        }
 
-      //captures a screenshot and return a uri
-      const localUri = await captureRef(imageRef, {
+        //captures a screenshot and return a uri
+        const localUri = await captureRef(imageRef, {
+          height: 440,
+          quality: 1,
+        });
+
+        //uses the uri to save the media to device gallery
+        await MediaLibrary.saveToLibraryAsync(localUri);
+
+        if (localUri) {
+          alert("Sreenshot Saved!");
+        }
+
+      } catch (error) {
+        console.log("Error Taking Screenshot:", error);
+        alert("Failed to save screenshot. Please try again.");
+      }
+    } else {
+      try {
+        const dataUrl = await domtoimage.toJpeg(imageRef.current , {
+        quality: 0.95,
+        width: 320,
         height: 440,
-        quality: 1,
-      });
+       });
 
-      //uses the uri to save the media to device gallery
-      await MediaLibrary.saveToLibraryAsync(localUri);
-
-      if (localUri) {
-        alert("Sreenshot Saved!");
+      let link = document.createElement('a');
+      link.download = 'sticker-smash.jpeg';
+      link.href = dataUrl;
+      link.click();
+      } catch (e) {
+         console.log(e);
       }
-
-    } catch (error) {
-      console.log("Error Taking Screenshot:", error);
-      alert("Failed to save screenshot. Please try again.");
     }
   }
+  
 
   return (
     <GestureHandlerRootView
@@ -155,6 +176,7 @@ export default function Index() {
     </GestureHandlerRootView>
   );
 }
+
 
 
 const styles = StyleSheet.create({
