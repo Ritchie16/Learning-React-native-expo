@@ -1,7 +1,9 @@
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from "react";
+import * as MediaLibrary from 'expo-media-library';
+import React, { useEffect, useRef, useState } from "react";
 import { ImageSourcePropType, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { captureRef } from 'react-native-view-shot';
 
 
 
@@ -22,6 +24,18 @@ export default function Index() {
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | undefined>(undefined);
+
+  //stores the permission statues
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+  //store the reference of where screenshot will be taken and it's get mounted to targeed View element
+  const imageRef = useRef<View>(null);
+
+  //check if the permission to accessing device media library is null or granted, if null request
+  useEffect(() => {
+    if(!permissionResponse?.granted){
+      requestPermission();
+    }
+  }, []);
 
   const pickImageAsync = async () => {
     //the function launchImageLibraryAsync opens the image gallery
@@ -58,19 +72,49 @@ export default function Index() {
     setIsModalVisible(false);
   }
 
-  const onSaveImageAsync = () => {
-    //will be implemented later
+  //logic to take a screenshot and save to media gallery
+  const onSaveImageAsync = async () => {
+    try {
+      //checks permission before taking screenshot
+      if (!permissionResponse?.granted) {
+        await requestPermission();
+        alert("Permission granted. Tap Save again to store the image.");
+        return;
+      }
+
+      //captures a screenshot and return a uri
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      //uses the uri to save the media to device gallery
+      await MediaLibrary.saveToLibraryAsync(localUri);
+
+      if (localUri) {
+        alert("Sreenshot Saved!");
+      }
+
+    } catch (error) {
+      console.log("Error Taking Screenshot:", error);
+      alert("Failed to save screenshot. Please try again.");
+    }
   }
+
   return (
     <GestureHandlerRootView
       style={styles.container}
     >
       <View style={styles.imageContainer} >
-        {/**pass the placeholder image and selected image to ImageViewer, if selectedImage is defined it will be the one to be displayed */}
-       <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
+        
+        {/**reference of where to take to the screenshot */}
+        <View ref={imageRef} collapsable={false}>
+          {/**pass the placeholder image and selected image to ImageViewer, if selectedImage is defined it will be the one to be displayed */}
+          <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
 
-       {/**renders the selected sticker from sticker list in sticker modal */}
-       {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/>}
+          {/**renders the selected sticker from sticker list in sticker modal */}
+          {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/>}
+        </View>
       </View>
 
       {
