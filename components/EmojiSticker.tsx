@@ -10,7 +10,7 @@ type Props = {
 }
 //displays the sticker that was selected, it receivs the sticker size and source props
 export default function EmojiSticker({imageSize, stickerSource}: Props){
-    //a mutable value
+    //a mutable value stored on UI thread that can change without causing a re-render
     const scaleImage = useSharedValue(imageSize);
 
     //for pan gesture to track movement
@@ -33,7 +33,7 @@ export default function EmojiSticker({imageSize, stickerSource}: Props){
     })
 
 
-    //the useAnimatedStyle notices changes  for scaleImage value and 
+    //the useAnimatedStyle notices changes  for scaleImage value and apply changes to imageStyle
     const imageStyle = useAnimatedStyle(() => {
         return {
             //withSpring makes the emoji to grow and shrink smoothly 
@@ -46,10 +46,11 @@ export default function EmojiSticker({imageSize, stickerSource}: Props){
     //Gesture.Pan() is a config object to detect track movement
     const drag = Gesture.Pan()
     .onChange(event => {
-        translateX.value += event.changeX;
+        translateX.value += event.changeX; //adds the x cchange value to the translateX
         translateY.value += event.changeY;
     });
 
+    //apply the changes to containerStyle using the useAnimatedStyle
     const containerStyle = useAnimatedStyle(() => {
         return{
             transform: [
@@ -64,6 +65,10 @@ export default function EmojiSticker({imageSize, stickerSource}: Props){
     });
 
 
+    {/**GestureDetectors are responsible for detecting specific gestures (pan, tap).
+     *  useAnimatedStyle reacts to shared value changes and produces animated styles.
+     *  These styles are applied to Animated components, which update on the UI thread without React re-renders.
+     */}
     return(
         <GestureDetector gesture={drag}>
 
