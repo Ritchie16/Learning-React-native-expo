@@ -106,8 +106,9 @@ export default function Index() {
       }
     } else {
       try {
-        const dataUrl = await domtoimage.toJpeg(imageRef.current as unknown as HTMLElement, {
-        quality: 0.95,
+        //tries taking the screenshot on web
+       const dataUrl = await domtoimage.toJpeg(imageRef.current as unknown as HTMLElement, {
+        quality: 1,
         width: 320,
         height: 440,
        });
@@ -118,6 +119,7 @@ export default function Index() {
       link.click();
       } catch (e) {
          console.log(e);
+         alert("Error saving screenshot: " + e);
       }
     }
   }
