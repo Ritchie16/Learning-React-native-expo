@@ -30,6 +30,7 @@ export default function Index() {
   //store the reference of where screenshot will be taken and it's get mounted to targeed View element
   const imageRef = useRef<View>(null);
 
+  //IN PRODUCTION THIS LOGIC IS BAD FOR UX - USER HAS NO KNOWLEDGE TO WHY PERMISSION IS NECESSARY
   //check if the permission to accessing device media library is null or granted, if null request
   useEffect(() => {
     if(!permissionResponse?.granted){
@@ -78,7 +79,7 @@ export default function Index() {
       //checks permission before taking screenshot
       if (!permissionResponse?.granted) {
         await requestPermission();
-        alert("Permission granted. Tap Save again to store the image.");
+        alert("Access allowed. Tap Save again to save your image.");
         return;
       }
 
